@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑图片 - 画布编辑器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            font-size: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 90vw;
+            max-height: 60vh;
+        }
+
+        .canvas-area {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .canvas-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tools-container {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 20px;
+            border-radius: 16px;
+            padding: 20px;
+            color: #333;
+        }
+
+        .tool-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .tool-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s;
+            min-width: 60px;
+        }
+
+        .tool-btn:hover {
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .tool-btn.active {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .tool-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .tool-icon.reset { background: #4CAF50; color: white; }
+        .tool-icon.bw { background: linear-gradient(90deg, #000 50%, #fff 50%); }
+        .tool-icon.transparent { background: #4CAF50; color: white; }
+        .tool-icon.eraser { background: #f44336; color: white; }
+        .tool-icon.brush { background: #4CAF50; color: white; }
+
+        .slider-container {
+            margin: 15px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #4CAF50;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #4CAF50;
+            cursor: pointer;
+        }
+
+        .color-picker-container {
+            margin: 15px 0;
+        }
+
+        .color-gradient {
+            height: 40px;
+            border-radius: 20px;
+            background: linear-gradient(90deg, 
+                #000, #333, #666, #999, #ccc, #fff,
+                #f00, #ff0, #0f0, #0ff, #00f, #f0f
+            );
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+        }
+
+        .transparency-bar {
+            height: 30px;
+            border-radius: 15px;
+            background: linear-gradient(90deg, transparent, #666);
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(-45deg, #ccc 25%, transparent 25%);
+            background-size: 10px 10px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+        }
+
+        .control-label {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .upload-area {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .upload-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        .upload-btn:hover {
+            background: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="back-btn">‹</span>
+        <span class="title">编辑图片</span>
+    </div>
+
+    <div class="canvas-container">
+        <div class="canvas-wrapper">
+            <div class="canvas-area" id="canvasArea">
+                <!-- 底层空白画布 -->
+                <canvas class="canvas-layer" id="baseCanvas" width="400" height="400"></canvas>
+                <!-- 第二层图片 -->
+                <canvas class="canvas-layer" id="layer1Canvas" width="400" height="400"></canvas>
+                <!-- 第三层图片 -->
+                <canvas class="canvas-layer" id="layer2Canvas" width="400" height="400"></canvas>
+                <!-- 绘制层 -->
+                <canvas class="canvas-layer" id="drawCanvas" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="tools-container">
+        <div class="upload-area">
+            <button class="upload-btn" onclick="document.getElementById('imageInput1').click()">上传图片1</button>
+            <button class="upload-btn" onclick="document.getElementById('imageInput2').click()">上传图片2</button>
+            <input type="file" id="imageInput1" class="hidden" accept="image/*">
+            <input type="file" id="imageInput2" class="hidden" accept="image/*">
+        </div>
+
+        <div class="tool-buttons">
+            <button class="tool-btn" id="resetBtn">
+                <div class="tool-icon reset">↻</div>
+                <span>重置</span>
+            </button>
+            <button class="tool-btn" id="bwBtn">
+                <div class="tool-icon bw">◐</div>
+                <span>黑白化</span>
+            </button>
+            <button class="tool-btn" id="transparentBtn">
+                <div class="tool-icon transparent">○</div>
+                <span>透明化</span>
+            </button>
+            <button class="tool-btn" id="eraserBtn">
+                <div class="tool-icon eraser">⌫</div>
+                <span>橡皮擦</span>
+            </button>
+            <button class="tool-btn active" id="brushBtn">
+                <div class="tool-icon brush">✎</div>
+                <span>笔刷</span>
+            </button>
+        </div>
+
+        <div class="slider-container">
+            <input type="range" class="slider" id="brushSize" min="1" max="50" value="10">
+        </div>
+
+        <div class="color-picker-container">
+            <div class="color-gradient" id="colorPicker"></div>
+            <div class="transparency-bar" id="transparencyBar"></div>
+        </div>
+
+        <div class="control-label">调整画笔大小/颜色/透明</div>
+    </div>
+
+    <script>
+        // 画布和工具状态
+        let currentTool = 'brush';
+        let brushSize = 10;
+        let brushColor = '#000000';
+        let brushOpacity = 1;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // 获取画布元素
+        const baseCanvas = document.getElementById('baseCanvas');
+        const layer1Canvas = document.getElementById('layer1Canvas');
+        const layer2Canvas = document.getElementById('layer2Canvas');
+        const drawCanvas = document.getElementById('drawCanvas');
+        
+        const baseCtx = baseCanvas.getContext('2d');
+        const layer1Ctx = layer1Canvas.getContext('2d');
+        const layer2Ctx = layer2Canvas.getContext('2d');
+        const drawCtx = drawCanvas.getContext('2d');
+
+        // 初始化底层画布为白色
+        baseCtx.fillStyle = 'white';
+        baseCtx.fillRect(0, 0, 400, 400);
+
+        // 工具按钮事件
+        document.getElementById('resetBtn').addEventListener('click', resetCanvas);
+        document.getElementById('bwBtn').addEventListener('click', () => setTool('blackwhite'));
+        document.getElementById('transparentBtn').addEventListener('click', () => setTool('transparent'));
+        document.getElementById('eraserBtn').addEventListener('click', () => setTool('eraser'));
+        document.getElementById('brushBtn').addEventListener('click', () => setTool('brush'));
+
+        // 画笔大小调节
+        document.getElementById('brushSize').addEventListener('input', (e) => {
+            brushSize = e.target.value;
+        });
+
+        // 图片上传
+        document.getElementById('imageInput1').addEventListener('change', (e) => loadImage(e, layer1Ctx));
+        document.getElementById('imageInput2').addEventListener('change', (e) => loadImage(e, layer2Ctx));
+
+        // 颜色选择
+        document.getElementById('colorPicker').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const ratio = x / rect.width;
+            
+            const colors = ['#000000', '#333333', '#666666', '#999999', '#cccccc', '#ffffff',
+                          '#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff'];
+            const index = Math.floor(ratio * colors.length);
+            brushColor = colors[Math.min(index, colors.length - 1)];
+        });
+
+        // 透明度调节
+        document.getElementById('transparencyBar').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            brushOpacity = x / rect.width;
+        });
+
+        // 绘制事件
+        drawCanvas.addEventListener('mousedown', startDrawing);
+        drawCanvas.addEventListener('mousemove', draw);
+        drawCanvas.addEventListener('mouseup', stopDrawing);
+        drawCanvas.addEventListener('mouseout', stopDrawing);
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tool === 'blackwhite' ? 'bwBtn' : 
+                                  tool === 'transparent' ? 'transparentBtn' :
+                                  tool === 'eraser' ? 'eraserBtn' : 'brushBtn').classList.add('active');
+        }
+
+        function resetCanvas() {
+            drawCtx.clearRect(0, 0, 400, 400);
+            layer1Ctx.clearRect(0, 0, 400, 400);
+            layer2Ctx.clearRect(0, 0, 400, 400);
+            baseCtx.fillStyle = 'white';
+            baseCtx.fillRect(0, 0, 400, 400);
+        }
+
+        function loadImage(event, ctx) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        ctx.clearRect(0, 0, 400, 400);
+                        
+                        // 计算缩放比例以适应画布
+                        const scale = Math.min(400 / img.width, 400 / img.height);
+                        const width = img.width * scale;
+                        const height = img.height * scale;
+                        const x = (400 - width) / 2;
+                        const y = (400 - height) / 2;
+                        
+                        ctx.drawImage(img, x, y, width, height);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = drawCanvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const rect = drawCanvas.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+            
+            drawCtx.lineWidth = brushSize;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            
+            if (currentTool === 'brush') {
+                drawCtx.globalCompositeOperation = 'source-over';
+                drawCtx.strokeStyle = brushColor;
+                drawCtx.globalAlpha = brushOpacity;
+            } else if (currentTool === 'eraser') {
+                drawCtx.globalCompositeOperation = 'destination-out';
+                drawCtx.globalAlpha = 1;
+            } else if (currentTool === 'blackwhite') {
+                drawCtx.globalCompositeOperation = 'source-over';
+                drawCtx.strokeStyle = '#808080';
+                drawCtx.globalAlpha = 0.5;
+            } else if (currentTool === 'transparent') {
+                drawCtx.globalCompositeOperation = 'destination-out';
+                drawCtx.globalAlpha = 0.3;
+            }
+            
+            drawCtx.beginPath();
+            drawCtx.moveTo(lastX, lastY);
+            drawCtx.lineTo(currentX, currentY);
+            drawCtx.stroke();
+            
+            lastX = currentX;
+            lastY = currentY;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+    </script>
+</body>
+</html>

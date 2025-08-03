@@ -1,0 +1,13 @@
+README.md
+setup.py
+augment_vip/__init__.py
+augment_vip/cli.py
+augment_vip/db_cleaner.py
+augment_vip/id_modifier.py
+augment_vip/utils.py
+augment_vip.egg-info/PKG-INFO
+augment_vip.egg-info/SOURCES.txt
+augment_vip.egg-info/dependency_links.txt
+augment_vip.egg-info/entry_points.txt
+augment_vip.egg-info/requires.txt
+augment_vip.egg-info/top_level.txt

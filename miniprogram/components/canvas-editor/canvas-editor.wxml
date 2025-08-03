@@ -1,0 +1,47 @@
+<!--canvas-editor.wxml-->
+<view class="canvas-editor">
+  <!-- 图片预览（备用方案，与首页完全一致） -->
+  <view class="image-preview" wx:if="{{imageSrc && canvasInitFailed}}">
+    <image
+      src="{{imageSrc}}"
+      mode="aspectFill"
+      class="preview-image"
+      bindload="onImageLoad"
+      binderror="onImageError"
+      lazy-load="{{false}}"
+      show-menu-by-longpress="{{false}}"
+      webp="{{true}}"
+      fade-in="{{true}}"
+    ></image>
+    <text class="preview-hint">图片预览模式 (Canvas不可用)</text>
+  </view>
+
+  <!-- 主Canvas -->
+  <canvas
+    id="mainCanvas"
+    canvas-id="mainCanvas"
+    type="2d"
+    class="main-canvas"
+    style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+    bindtouchstart="onTouchStart"
+    bindtouchmove="onTouchMove"
+    bindtouchend="onTouchEnd"
+  ></canvas>
+
+  <!-- 离屏Canvas用于图片处理 -->
+  <canvas
+    id="offscreenCanvas"
+    canvas-id="offscreenCanvas"
+    type="2d"
+    class="offscreen-canvas"
+    style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+  ></canvas>
+
+  <!-- 加载状态 -->
+  <view class="loading-overlay" wx:if="{{isLoading}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text>{{loadingText}}</text>
+    </view>
+  </view>
+</view>

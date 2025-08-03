@@ -1,0 +1,95 @@
+/**app.wxss**/
+/* 全局样式配置 - 基于原HTML的CSS变量转换 */
+
+/* 全局重置样式 */
+page {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 50%, #FF8E53 100%);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 全局变量定义 - 转换自原HTML的CSS变量 */
+:root {
+  /* 主色调 */
+  --primary-color: #FF6B6B;
+  --primary-hover: #FF5252;
+  --primary-active: #E53E3E;
+
+  /* 次要色调 */
+  --secondary-color: #FFE66D;
+  --secondary-hover: #FFD93D;
+  --secondary-active: #FFC107;
+
+  /* 强调色 */
+  --accent-color: #9C88FF;
+  --accent-hover: #8B7CF6;
+  --accent-active: #7C3AED;
+
+  /* 文字颜色 */
+  --text-primary: #2D3748;
+  --text-secondary: #4A5568;
+  --text-hint: #718096;
+  --text-inverse: #FFFFFF;
+  --text-link: #3182CE;
+
+  /* 状态色 */
+  --success-color: #48BB78;
+  --warning-color: #ED8936;
+  --error-color: #F56565;
+  --info-color: #4299E1;
+
+  /* 背景色 */
+  --card-bg: #FFFFFF;
+  --container-secondary: #F7FAFC;
+  --input-bg: #FFFFFF;
+  --input-border: #E2E8F0;
+  --divider-color: #E2E8F0;
+
+  /* 选中状态 */
+  --selected-bg: rgba(255, 107, 107, 0.1);
+  --hover-overlay: rgba(255, 255, 255, 0.1);
+  --active-overlay: rgba(0, 0, 0, 0.1);
+}
+
+/* 通用工具类 */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+/* 容器样式 */
+.container {
+  width: 750rpx;
+  height: 100vh;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #00C851 0%, #00FF7F 100%);
+  position: relative;
+  overflow: hidden;
+}

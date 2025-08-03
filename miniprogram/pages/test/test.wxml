@@ -1,0 +1,166 @@
+<!--test.wxml-->
+<view class="test-container">
+  <view class="test-header">
+    <text class="test-title">功能测试页面</text>
+    <text class="test-subtitle">验证表情包应用的各项功能是否正常工作</text>
+  </view>
+
+  <view class="test-actions">
+    <button
+      class="test-btn primary"
+      bindtap="runScrollTests"
+      disabled="{{isRunning}}"
+    >
+      {{isRunning ? '测试运行中...' : '滑动功能测试'}}
+    </button>
+
+    <button
+      class="test-btn secondary"
+      bindtap="debugImageDisplay"
+    >
+      图片显示调试
+    </button>
+
+    <button
+      class="test-btn secondary"
+      bindtap="viewDetailedResults"
+      disabled="{{!testReport}}"
+    >
+      查看详细结果
+    </button>
+
+    <button
+      class="test-btn"
+      bindtap="goBack"
+    >
+      返回主页面
+    </button>
+  </view>
+
+  <!-- 图片调试区域 -->
+  <view class="debug-section" wx:if="{{debugInfo}}">
+    <view class="debug-title">图片显示调试信息</view>
+
+    <view class="debug-item">
+      <text class="debug-label">当前标签页:</text>
+      <text class="debug-value">{{debugInfo.currentTab}}</text>
+    </view>
+
+    <view class="debug-item">
+      <text class="debug-label">身体图片URL:</text>
+      <text class="debug-value">{{debugInfo.selectedBody || '未选择'}}</text>
+    </view>
+
+    <view class="debug-item">
+      <text class="debug-label">身体图片显示类型:</text>
+      <text class="debug-value">{{debugInfo.bodyAnalysis.displayType}}</text>
+    </view>
+
+    <view class="debug-item">
+      <text class="debug-label">表情图片URL:</text>
+      <text class="debug-value">{{debugInfo.selectedExpression || '未选择'}}</text>
+    </view>
+
+    <view class="debug-item">
+      <text class="debug-label">表情图片显示类型:</text>
+      <text class="debug-value">{{debugInfo.expressionAnalysis.displayType}}</text>
+    </view>
+
+    <view class="debug-item">
+      <text class="debug-label">自定义图片数量:</text>
+      <text class="debug-value">身体: {{debugInfo.customBodyImages.length}}, 表情: {{debugInfo.customExpressionImages.length}}</text>
+    </view>
+  </view>
+
+  <!-- 图片URL测试区域 -->
+  <view class="url-test-section">
+    <view class="url-test-title">图片URL测试</view>
+    <input
+      class="url-input"
+      placeholder="输入图片URL进行测试"
+      value="{{testImageUrl}}"
+      bindinput="onTestUrlInput"
+    />
+    <button class="test-btn" bindtap="testImageUrl">测试显示</button>
+
+    <view class="test-image-container" wx:if="{{testImageUrl}}">
+      <image
+        src="{{testImageUrl}}"
+        mode="aspectFit"
+        class="test-image"
+        binderror="handleTestImageError"
+        bindload="handleTestImageLoad"
+      />
+    </view>
+  </view>
+
+  <!-- 测试结果概览 -->
+  <view class="test-summary" wx:if="{{testReport}}">
+    <view class="summary-title">测试概览</view>
+    <view class="summary-stats">
+      <view class="stat-item">
+        <text class="stat-label">总计</text>
+        <text class="stat-value">{{testReport.summary.total}}</text>
+      </view>
+      <view class="stat-item success">
+        <text class="stat-label">通过</text>
+        <text class="stat-value">{{testReport.summary.passed}}</text>
+      </view>
+      <view class="stat-item error">
+        <text class="stat-label">失败</text>
+        <text class="stat-value">{{testReport.summary.failed}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">通过率</text>
+        <text class="stat-value">{{testReport.summary.passRate}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 测试结果列表 -->
+  <view class="test-results" wx:if="{{testResults.length > 0}}">
+    <view class="results-title">测试结果</view>
+    <view class="result-item {{item.passed ? 'passed' : 'failed'}}" 
+          wx:for="{{testResults}}" 
+          wx:key="testName">
+      <view class="result-header">
+        <text class="result-name">{{item.testName}}</text>
+        <text class="result-status">{{item.passed ? '✅' : '❌'}}</text>
+      </view>
+      <text class="result-message">{{item.message}}</text>
+      
+      <!-- 显示额外的测试数据 -->
+      <view class="result-details" wx:if="{{item.contentHeight}}">
+        <text class="detail-item">内容高度: {{item.contentHeight}}px</text>
+        <text class="detail-item">网格高度: {{item.gridHeight}}px</text>
+      </view>
+      
+      <view class="result-details" wx:if="{{item.containerWidth}}">
+        <text class="detail-item">容器宽度: {{item.containerWidth}}px</text>
+        <text class="detail-item">Tab总宽度: {{item.totalTabsWidth}}px</text>
+        <text class="detail-item">Tab数量: {{item.tabCount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 改进建议 -->
+  <view class="recommendations" wx:if="{{testReport && testReport.recommendations.length > 0}}">
+    <view class="recommendations-title">改进建议</view>
+    <view class="recommendation-item" 
+          wx:for="{{testReport.recommendations}}" 
+          wx:key="*this">
+      <text class="recommendation-text">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 测试说明 -->
+  <view class="test-info">
+    <view class="info-title">测试说明</view>
+    <view class="info-content">
+      <text class="info-text">• 内容区域滚动测试：检查素材网格是否可以滚动</text>
+      <text class="info-text">• 底部padding测试：确保内容不被底部导航栏遮挡</text>
+      <text class="info-text">• 滚动到底部测试：验证是否能查看最下面的内容</text>
+      <text class="info-text">• 分类Tab横向滚动测试：检查Tab是否支持横向滚动</text>
+    </view>
+  </view>
+</view>

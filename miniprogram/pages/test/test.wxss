@@ -1,0 +1,318 @@
+/**test.wxss**/
+/* 测试页面样式 */
+
+.test-container {
+  padding: 40rpx;
+  background: #f7fafc;
+  min-height: 100vh;
+}
+
+.test-header {
+  text-align: center;
+  margin-bottom: 60rpx;
+}
+
+.test-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 20rpx;
+}
+
+.test-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #718096;
+  line-height: 1.5;
+}
+
+.test-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-bottom: 60rpx;
+}
+
+.test-btn {
+  padding: 24rpx 40rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.test-btn.primary {
+  background: linear-gradient(135deg, #FF6B6B, #FFE66D);
+  color: white;
+}
+
+.test-btn.primary:disabled {
+  background: #e2e8f0;
+  color: #a0aec0;
+}
+
+.test-btn.secondary {
+  background: #9C88FF;
+  color: white;
+}
+
+.test-btn.secondary:disabled {
+  background: #e2e8f0;
+  color: #a0aec0;
+}
+
+.test-btn:not(.primary):not(.secondary) {
+  background: white;
+  color: #4a5568;
+  border: 2rpx solid #e2e8f0;
+}
+
+.test-summary {
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.summary-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 30rpx;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  background: #f7fafc;
+}
+
+.stat-item.success {
+  background: rgba(72, 187, 120, 0.1);
+}
+
+.stat-item.error {
+  background: rgba(245, 101, 101, 0.1);
+}
+
+.stat-label {
+  display: block;
+  font-size: 24rpx;
+  color: #718096;
+  margin-bottom: 8rpx;
+}
+
+.stat-value {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.test-results {
+  margin-bottom: 40rpx;
+}
+
+.results-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 30rpx;
+}
+
+.result-item {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  border-left: 8rpx solid #e2e8f0;
+}
+
+.result-item.passed {
+  border-left-color: #48bb78;
+}
+
+.result-item.failed {
+  border-left-color: #f56565;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.result-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.result-status {
+  font-size: 36rpx;
+}
+
+.result-message {
+  display: block;
+  font-size: 28rpx;
+  color: #4a5568;
+  line-height: 1.5;
+  margin-bottom: 16rpx;
+}
+
+.result-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f7fafc;
+}
+
+.detail-item {
+  font-size: 24rpx;
+  color: #718096;
+}
+
+.recommendations {
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  border-left: 8rpx solid #9C88FF;
+}
+
+.recommendations-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 30rpx;
+}
+
+.recommendation-item {
+  margin-bottom: 16rpx;
+}
+
+.recommendation-text {
+  font-size: 28rpx;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+.test-info {
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.info-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 30rpx;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.info-text {
+  font-size: 28rpx;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+/* 调试区域样式 */
+.debug-section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  border-left: 8rpx solid #6c757d;
+}
+
+.debug-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 30rpx;
+}
+
+.debug-item {
+  display: flex;
+  margin-bottom: 20rpx;
+  align-items: flex-start;
+}
+
+.debug-label {
+  font-size: 28rpx;
+  color: #718096;
+  min-width: 200rpx;
+  font-weight: 500;
+}
+
+.debug-value {
+  font-size: 28rpx;
+  color: #2d3748;
+  flex: 1;
+  word-break: break-all;
+}
+
+/* URL测试区域样式 */
+.url-test-section {
+  background: white;
+  border-radius: 26rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  border-left: 8rpx solid #28a745;
+}
+
+.url-test-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 40rpx;
+}
+
+.url-input {
+  width: 100%;
+  padding: 20rpx;
+  border: 2rpx solid #e2e8f0;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  margin-bottom: 20rpx;
+  background: #f7fafc;
+  box-sizing: border-box;
+}
+
+.test-image-container {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #f7fafc;
+  border-radius: 12rpx;
+  text-align: center;
+}
+
+.test-image {
+  max-width: 300rpx;
+  max-height: 300rpx;
+  border-radius: 12rpx;
+  border: 2rpx solid #e2e8f0;
+}

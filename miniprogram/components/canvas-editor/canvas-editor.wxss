@@ -1,0 +1,115 @@
+/* canvas-editor.wxss */
+
+.canvas-editor {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.main-canvas {
+  /* 🎯 与首页preview-custom-image保持像素级一致的样式 */
+  width: 400rpx;
+  height: 400rpx;
+  background: white;
+  border-radius: 32rpx; /* 与首页完全一致的圆角 */
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15); /* 与首页完全一致的阴影 */
+
+  /* 确保Canvas的显示效果与首页image组件一致 */
+  display: block;
+  margin: 0 auto;
+
+  /* 触摸优化 */
+  touch-action: none;
+  user-select: none;
+
+  /* 确保Canvas内容清晰显示 */
+  image-rendering: auto;
+}
+
+.offscreen-canvas {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 6rpx solid #e2e8f0;
+  border-top: 6rpx solid #FF6B6B;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-content text {
+  font-size: 28rpx;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* 图片预览样式（备用方案，与首页保持完全一致） */
+.image-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.preview-image {
+  /* 🎯 与首页preview-custom-image保持完全一致的样式 */
+  width: 400rpx;
+  height: 400rpx;
+  border-radius: 32rpx; /* 与首页一致的圆角 */
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15); /* 与首页一致的阴影 */
+  object-fit: cover; /* 与首页一致的填充方式 */
+  display: block;
+  margin: 0 auto;
+  image-rendering: auto;
+}
+
+.preview-hint {
+  position: absolute;
+  bottom: 20rpx;
+  font-size: 24rpx;
+  color: #718096;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+}

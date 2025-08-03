@@ -1,0 +1,741 @@
+/**index.wxss**/
+/* 页面样式 - 完全还原HTML原始视觉效果 */
+
+/* 安全区域适配 */
+.safe-area-top {
+  /* 使用动态高度，通过JavaScript设置 */
+  height: 0; /* 默认高度为0 */
+
+  /* 背景色与容器保持一致 */
+  background: linear-gradient(135deg, #00C851 0%, #00FF7F 100%);
+  width: 100%;
+
+  /* 过渡动画，让高度变化更平滑 */
+  transition: height 0.3s ease;
+}
+
+/* 容器样式 */
+.container {
+  width: 750rpx;
+  height: 100vh;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #00C851 0%, #00FF7F 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+/* 标题栏 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 40rpx;
+  color: white;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+
+
+/* 预览区域 */
+.preview-area {
+  margin: 40rpx;
+  background: white;
+  border-radius: 24rpx;
+  height: 560rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 40rpx rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-content {
+  text-align: center;
+  color: #999;
+  line-height: 1.6;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 图层元素样式 */
+.preview-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+}
+
+.preview-layer.interactive {
+  transition: none;
+}
+
+.preview-layer.flipping {
+  transition: transform 0.3s ease;
+}
+
+.body-layer {
+  z-index: 1;
+  font-size: 96rpx;
+  /* 确保图片图层不受字体大小影响 */
+  line-height: 1;
+}
+
+.expression-layer {
+  z-index: 2;
+  font-size: 96rpx;
+  /* 确保图片图层不受字体大小影响 */
+  line-height: 1;
+}
+
+.text-layer {
+  z-index: 3;
+  font-size: 36rpx;
+  font-weight: 600;
+  text-align: center;
+  white-space: pre-wrap;
+  max-width: 200rpx;
+}
+
+.default-hint {
+  z-index: 0;
+  color: #999;
+  font-size: 28rpx;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* 预览区域自定义图片样式 - 修复尺寸和显示问题 */
+.preview-custom-image {
+  /* 增大尺寸确保可见性 */
+  width: 400rpx;
+  height: 400rpx;
+  border-radius: 32rpx;
+  /* 使用cover模式保持长宽比 */
+  object-fit: cover;
+  /* 确保图片质量和性能 */
+  image-rendering: auto;
+  /* 添加轻微阴影增强视觉效果 */
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  /* 确保图片在图层系统中正确显示 */
+  display: block;
+  /* 优化触摸响应 - 移除过渡动画避免影响缩放流畅性 */
+  /* transition: all 0.3s ease; */
+  /* 确保图片在容器中居中 */
+  margin: 0 auto;
+  /* 优化触摸体验 */
+  touch-action: none;
+  user-select: none;
+}
+
+/* 预览区域emoji内容样式 */
+.preview-emoji-content {
+  /* 设置emoji显示尺寸 */
+  font-size: 200rpx;
+  line-height: 1;
+  /* 确保emoji在容器中居中 */
+  display: block;
+  text-align: center;
+  /* 优化触摸体验 */
+  touch-action: none;
+  user-select: none;
+  /* 确保emoji清晰显示 */
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  /* 添加轻微阴影增强视觉效果 */
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 功能标签栏 */
+.tab-bar {
+  display: flex;
+  padding: 0 40rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  color: rgba(255,255,255,0.7);
+  font-size: 28rpx;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  border-radius: 16rpx;
+  margin: 0 8rpx;
+}
+
+.tab-item:hover:not(.active) {
+  color: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tab-item.active {
+  color: #FFFFFF;
+  font-weight: 600;
+  background: linear-gradient(135deg, #9C88FF, #FF6B6B);
+  box-shadow: 0 4rpx 16rpx rgba(156, 136, 255, 0.3);
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 6rpx;
+  background: #FFE66D;
+  border-radius: 4rpx;
+}
+
+/* 内容区域 */
+.content-area {
+  background: #F7FAFC;
+  border-radius: 40rpx 40rpx 0 0;
+  flex: 1;
+  padding: 40rpx 40rpx 200rpx 40rpx; /* 增加底部padding避免被导航栏遮挡 */
+  overflow-y: auto;
+  margin-bottom: 0;
+  /* 移除固定高度限制，让内容自然撑开并支持滚动 */
+  min-height: 0; /* 确保flex子元素可以收缩 */
+}
+
+/* 分类标签 */
+.category-tabs {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
+  overflow-x: auto;
+  padding-bottom: 10rpx;
+  /* 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+/* 隐藏滚动条 */
+.category-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.category-tab {
+  padding: 20rpx 36rpx;
+  background: #FFFFFF;
+  border-radius: 50rpx;
+  font-size: 26rpx;
+  color: #4A5568;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  border: 4rpx solid transparent;
+  font-weight: 500;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  /* 确保Tab在横向滚动中不会被压缩 */
+  flex-shrink: 0;
+}
+
+.category-tab:hover:not(.active) {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+  color: #2D3748;
+}
+
+.category-tab.active {
+  background: linear-gradient(135deg, #FF6B6B, #FFE66D);
+  color: #FFFFFF;
+  border-color: transparent;
+  transform: translateY(-4rpx);
+  box-shadow: 0 12rpx 32rpx rgba(255, 107, 107, 0.3);
+}
+
+/* 素材网格 */
+.material-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24rpx;
+}
+
+.material-item {
+  aspect-ratio: 1;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 4rpx solid transparent;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  font-size: 48rpx;
+}
+
+.material-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.material-item:hover {
+  transform: scale(1.05) translateY(-4rpx);
+  box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.15);
+}
+
+.material-item:hover::before {
+  opacity: 1;
+}
+
+.material-item.selected {
+  border: 6rpx solid;
+  border-image: linear-gradient(135deg, #FF6B6B, #9C88FF, #FFE66D) 1;
+  transform: scale(1.02) translateY(-2rpx);
+  box-shadow: 0 12rpx 32rpx rgba(255, 107, 107, 0.3);
+}
+
+.material-item.upload {
+  border: 4rpx dashed #718096;
+  color: #718096;
+  font-size: 24rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.material-item.upload:hover {
+  border-color: #9C88FF;
+  color: #9C88FF;
+  background: linear-gradient(135deg, #f1f3f4, #e8eaed);
+}
+
+/* 自定义图片样式 */
+.material-item.custom-image {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.custom-material-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 20rpx;
+  object-fit: cover;
+}
+
+.delete-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 20rpx;
+  text-align: center;
+  padding: 8rpx 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transform: translateY(100%);
+}
+
+.material-item.custom-image:hover .delete-hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 编辑按钮样式 */
+.edit-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 8rpx;
+  border-radius: 50%;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 15;
+  width: 60rpx;
+  height: 60rpx;
+  backdrop-filter: blur(8rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+.edit-btn.show {
+  opacity: 0.8;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.edit-btn:hover {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+}
+
+.edit-btn:active {
+  transform: translate(-50%, -50%) scale(0.9);
+  transition: all 0.1s ease;
+}
+
+/* 图片容器hover时显示编辑按钮 */
+.material-item.custom-image:hover .edit-btn {
+  opacity: 0.6;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+/* 编辑图标样式 */
+.edit-icon {
+  font-size: 32rpx;
+  line-height: 1;
+  opacity: 0.7;
+  filter: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.5));
+}
+
+/* 增强编辑按钮的可见性和交互性 */
+.material-item.custom-image {
+  position: relative;
+}
+
+.material-item.custom-image .edit-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 选中状态下编辑按钮更明显 */
+.material-item.custom-image.selected .edit-btn.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
+}
+
+.material-item.custom-image.selected .edit-icon {
+  opacity: 1;
+}
+
+.edit-icon {
+  font-size: 28rpx;
+  line-height: 1;
+}
+
+.edit-btn text {
+  font-size: 20rpx;
+  font-weight: 500;
+  color: white;
+}
+
+/* 自定义图片选中状态 */
+.material-item.custom-image.selected {
+  border: 6rpx solid;
+  border-image: linear-gradient(135deg, #FF6B6B, #9C88FF, #FFE66D) 1;
+  transform: scale(1.02) translateY(-2rpx);
+  box-shadow: 0 12rpx 32rpx rgba(255, 107, 107, 0.3);
+}
+
+.material-item.custom-image.selected .custom-material-image {
+  border-radius: 16rpx; /* 选中时稍微减小圆角以适应边框 */
+}
+
+/* 隐藏其他页面内容 */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* 文字编辑页面样式 */
+.text-input {
+  width: 100%;
+  padding: 32rpx 40rpx;
+  border: 4rpx solid #E2E8F0;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  margin-bottom: 48rpx;
+  background: #FFFFFF;
+  color: #2D3748;
+  transition: all 0.3s ease;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: #9C88FF;
+  box-shadow: 0 0 0 6rpx rgba(156, 136, 255, 0.1);
+}
+
+.color-picker-section {
+  margin-bottom: 48rpx;
+}
+
+.color-picker {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: linear-gradient(to right, #000, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #fff);
+  margin-bottom: 32rpx;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+.color-handle {
+  width: 48rpx;
+  height: 48rpx;
+  background: #FFFFFF;
+  border: 6rpx solid #2D3748;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
+}
+
+.color-handle:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.toggle-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40rpx;
+  color: #2D3748;
+  font-weight: 500;
+}
+
+.toggle {
+  width: 108rpx;
+  height: 64rpx;
+  background: #48BB78;
+  border-radius: 32rpx;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4rpx 16rpx rgba(72, 187, 120, 0.3);
+}
+
+.toggle::after {
+  content: '';
+  width: 56rpx;
+  height: 56rpx;
+  background: #FFFFFF;
+  border-radius: 50%;
+  position: absolute;
+  top: 4rpx;
+  right: 4rpx;
+  transition: all 0.3s ease;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.toggle.off {
+  background: #718096;
+  box-shadow: 0 4rpx 16rpx rgba(113, 128, 150, 0.2);
+}
+
+.toggle.off::after {
+  right: 48rpx;
+}
+
+.text-hint {
+  color: #718096;
+  font-size: 26rpx;
+  text-align: center;
+  margin-top: 48rpx;
+  line-height: 1.5;
+  background: #FFFFFF;
+  padding: 24rpx 32rpx;
+  border-radius: 16rpx;
+  border-left: 6rpx solid #9C88FF;
+}
+
+/* 生成页面样式 */
+
+.option-section {
+  margin-bottom: 40rpx;
+}
+
+.option-title {
+  font-size: 32rpx;
+  margin-bottom: 32rpx;
+  color: #2D3748;
+  font-weight: 600;
+}
+
+.option-buttons {
+  display: flex;
+  gap: 24rpx;
+}
+
+.option-btn {
+  flex: 1;
+  padding: 28rpx 24rpx;
+  background: #FFFFFF;
+  border: 4rpx solid #E2E8F0;
+  border-radius: 24rpx;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #4A5568;
+  font-weight: 500;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.option-btn:hover:not(.active) {
+  border-color: #9C88FF;
+  color: #2D3748;
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.option-btn.active {
+  background: linear-gradient(135deg, #9C88FF, #FF6B6B);
+  color: #FFFFFF;
+  border-color: transparent;
+  transform: translateY(-4rpx);
+  box-shadow: 0 12rpx 32rpx rgba(156, 136, 255, 0.3);
+}
+
+.generate-btn {
+  width: 100%;
+  padding: 36rpx;
+  background: linear-gradient(135deg, #FF6B6B, #FFE66D);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 32rpx;
+  transition: all 0.3s ease;
+  box-shadow: 0 8rpx 32rpx rgba(255, 107, 107, 0.3);
+}
+
+.generate-btn:hover {
+  transform: translateY(-4rpx);
+  box-shadow: 0 16rpx 48rpx rgba(255, 107, 107, 0.4);
+}
+
+.generate-btn:active {
+  transform: translateY(0);
+}
+
+.feedback-link {
+  text-align: center;
+  color: #3182CE;
+  font-size: 28rpx;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.feedback-link:hover {
+  color: #FF6B6B;
+}
+
+/* 底部导航 */
+.bottom-nav {
+  display: flex;
+  background: #FFFFFF;
+  padding: 24rpx 0;
+  border-top: 2rpx solid #E2E8F0;
+  position: fixed; /* 改为fixed定位，确保始终在底部 */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100; /* 提高z-index确保在最上层 */
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.08);
+  /* 添加安全区域适配 */
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+}
+
+.nav-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  color: #718096;
+  font-size: 24rpx;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 16rpx;
+  margin: 0 16rpx;
+}
+
+.nav-item:hover:not(.active) {
+  color: #4A5568;
+  background: #F7FAFC;
+}
+
+.nav-item.active {
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.nav-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin: 0 auto 8rpx;
+  background: #718096;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.nav-item.active .nav-icon {
+  background: linear-gradient(135deg, #FF6B6B, #9C88FF);
+}
+
+/* 调试工具样式 */
+.nav-item.debug-nav {
+  color: #9C88FF;
+  font-size: 22rpx;
+}
+
+.nav-item.debug-nav:hover {
+  color: #7C3AED;
+  background: rgba(156, 136, 255, 0.1);
+}
+
+.debug-icon {
+  background: none !important;
+  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+

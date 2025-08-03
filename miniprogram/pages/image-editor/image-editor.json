@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "编辑图片",
+  "navigationBarBackgroundColor": "#00C851",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f7fafc",
+  "enablePullDownRefresh": false,
+  "disableScroll": true,
+  "usingComponents": {
+    "canvas-editor": "../../components/canvas-editor/canvas-editor"
+  }
+}

@@ -1,0 +1,275 @@
+/* image-editor.wxss */
+
+/* 引入全局CSS变量 */
+@import "../../app.wxss";
+
+.container {
+  height: 100vh;
+  background: linear-gradient(135deg, #00C851 0%, #00FF7F 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.safe-area-top {
+  background: transparent;
+}
+
+/* 预览区域 */
+.preview-area {
+  flex: 1;
+  margin: 20rpx;
+  background: white;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 工具栏 */
+.tool-bar {
+  background: var(--container-secondary, #F7FAFC);
+  border-radius: 40rpx 40rpx 0 0;
+  padding: 30rpx 40rpx 20rpx;
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 功能按钮区域 - 所有功能按钮排列在同一行 */
+.function-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.function-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 16rpx;
+  background: var(--card-bg, #FFFFFF);
+  border-radius: 20rpx;
+  border: 4rpx solid transparent;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.function-btn:hover {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+.function-btn.active {
+  border-color: var(--primary-color, #FF6B6B);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(156, 136, 255, 0.1));
+  transform: translateY(-4rpx);
+  box-shadow: 0 12rpx 32rpx rgba(255, 107, 107, 0.3);
+}
+
+.function-icon {
+  font-size: 48rpx;
+  margin-bottom: 8rpx;
+  line-height: 1;
+}
+
+.function-btn text {
+  font-size: 24rpx;
+  color: var(--text-secondary, #4A5568);
+  font-weight: 500;
+}
+
+.function-btn.active text {
+  color: var(--primary-color, #FF6B6B);
+  font-weight: 600;
+}
+
+/* 参数控制区域 - 通用滑块，所有功能共享使用 */
+.param-control {
+  margin-bottom: 30rpx;
+  padding: 30rpx;
+  background: var(--card-bg, #FFFFFF);
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.param-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--text-primary, #2D3748);
+  margin-bottom: 20rpx;
+}
+
+.universal-slider {
+  width: 100%;
+  height: 8rpx;
+}
+
+/* 颜色控制区域（仅在笔刷工具激活时显示） */
+.color-control {
+  margin-bottom: 30rpx;
+  padding: 30rpx;
+  background: var(--card-bg, #FFFFFF);
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 操作确认区域 - 通用的应用/确认按钮 */
+.confirm-control {
+  margin-bottom: 20rpx;
+  padding: 20rpx 30rpx;
+  background: var(--card-bg, #FFFFFF);
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.confirm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  background: linear-gradient(135deg, var(--primary-color, #FF6B6B), var(--accent-color, #9C88FF));
+  border-radius: 16rpx;
+  color: white;
+  font-weight: 600;
+  font-size: 28rpx;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4rpx 16rpx rgba(255, 107, 107, 0.3);
+}
+
+.confirm-btn:hover {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 107, 0.4);
+}
+
+.confirm-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+  line-height: 1;
+}
+
+/* 颜色选择 */
+.color-options {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.color-option {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 4rpx solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+}
+
+.color-option.selected {
+  border-color: var(--primary-color, #FF6B6B);
+  transform: scale(1.15);
+  box-shadow: 0 4rpx 16rpx rgba(255, 107, 107, 0.3);
+}
+
+/* 操作栏 */
+.action-bar {
+  background: var(--card-bg, #FFFFFF);
+  padding: 20rpx 40rpx;
+  border-top: 2rpx solid var(--divider-color, #E2E8F0);
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.08);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 12rpx;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: var(--container-secondary, #F7FAFC);
+}
+
+.action-btn:hover:not(.disabled) {
+  transform: translateY(-2rpx);
+  background: var(--selected-bg, rgba(255, 107, 107, 0.1));
+}
+
+.action-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.action-btn.cancel {
+  background: rgba(245, 101, 101, 0.1);
+  color: var(--error-color, #F56565);
+}
+
+.action-btn.cancel:hover:not(.disabled) {
+  background: rgba(245, 101, 101, 0.2);
+}
+
+.action-btn.save {
+  background: linear-gradient(135deg, var(--primary-color, #FF6B6B), var(--accent-color, #9C88FF));
+  color: white;
+}
+
+.action-btn.save:hover:not(.disabled) {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 107, 0.3);
+}
+
+.action-icon {
+  font-size: 36rpx;
+  margin-bottom: 6rpx;
+  line-height: 1;
+}
+
+.action-btn text {
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.action-btn.save text {
+  color: white;
+}
+
+/* 响应式适配 */
+@media (max-width: 375px) {
+  .function-buttons {
+    gap: 12rpx;
+  }
+
+  .function-btn {
+    padding: 16rpx 12rpx;
+  }
+
+  .function-icon {
+    font-size: 40rpx;
+  }
+
+  .action-buttons {
+    gap: 12rpx;
+  }
+
+  .confirm-btn {
+    font-size: 26rpx;
+    padding: 20rpx;
+  }
+
+  .confirm-icon {
+    font-size: 28rpx;
+  }
+}

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>滤镜功能测试页面</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-area {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+        }
+
+        #mainCanvas {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .tool-bar {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .tool-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .tool-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .tool-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tool-btn:hover {
+            border-color: #cbd5e0;
+        }
+
+        .tool-btn.active {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .tool-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .tool-btn text {
+            font-size: 12px;
+            color: #4a5568;
+            display: block;
+        }
+
+        .param-section {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .param-label {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .param-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .param-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            cursor: pointer;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="preview-area">
+            <canvas id="mainCanvas" width="200" height="200"></canvas>
+        </div>
+
+        <div class="tool-bar">
+            <div class="tool-section">
+                <span class="section-title">滤镜效果</span>
+                <div class="tool-buttons">
+                    <div class="tool-btn" data-tool="grayscale">
+                        <div class="tool-icon">⚫</div>
+                        <text>黑白</text>
+                    </div>
+                    <div class="tool-btn" data-tool="opacity">
+                        <div class="tool-icon">◐</div>
+                        <text>透明化</text>
+                    </div>
+                </div>
+            </div>
+
+            <div class="param-section hidden">
+                <span class="param-label">透明度: <span id="opacity-value">100</span>%</span>
+                <input type="range" class="param-slider" id="opacity-slider" min="0" max="100" value="100">
+            </div>
+
+            <div class="param-section hidden">
+                <span class="param-label">黑白强度: <span id="grayscale-value">100</span>%</span>
+                <input type="range" class="param-slider" id="grayscale-slider" min="0" max="100" value="100">
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <span id="loading-text">处理中...</span>
+        </div>
+    </div>
+
+    <script>
+        // 全局错误收集
+        window.testErrors = [];
+        window.addEventListener('error', (e) => {
+            window.testErrors.push({
+                message: e.message,
+                filename: e.filename,
+                lineno: e.lineno,
+                colno: e.colno,
+                error: e.error
+            });
+        });
+
+        // 模拟Canvas编辑器功能
+        class MockCanvasEditor {
+            constructor() {
+                this.canvas = document.getElementById('mainCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.isProcessingFilter = false;
+                this.filterProcessingType = null;
+                this.isRealtimeOpacity = false;
+                
+                this.initCanvas();
+                this.bindEvents();
+            }
+
+            initCanvas() {
+                // 绘制测试图像
+                this.ctx.fillStyle = '#ff6b6b';
+                this.ctx.fillRect(50, 50, 100, 100);
+                this.ctx.fillStyle = '#4299e1';
+                this.ctx.fillRect(75, 75, 50, 50);
+            }
+
+            bindEvents() {
+                // 工具选择
+                document.querySelectorAll('.tool-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const tool = e.currentTarget.dataset.tool;
+                        this.selectTool(tool);
+                    });
+                });
+
+                // 透明度滑块
+                const opacitySlider = document.getElementById('opacity-slider');
+                opacitySlider.addEventListener('input', (e) => {
+                    this.onOpacityChanging(parseInt(e.target.value));
+                });
+                opacitySlider.addEventListener('change', (e) => {
+                    this.onOpacityChange(parseInt(e.target.value));
+                });
+
+                // 黑白滑块
+                const grayscaleSlider = document.getElementById('grayscale-slider');
+                grayscaleSlider.addEventListener('change', (e) => {
+                    this.applyGrayscaleWithIntensity(parseInt(e.target.value));
+                });
+            }
+
+            selectTool(tool) {
+                // 更新UI
+                document.querySelectorAll('.tool-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+
+                // 显示对应参数面板
+                document.querySelectorAll('.param-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+
+                if (tool === 'opacity') {
+                    document.querySelector('#opacity-slider').closest('.param-section').classList.remove('hidden');
+                } else if (tool === 'grayscale') {
+                    document.querySelector('#grayscale-slider').closest('.param-section').classList.remove('hidden');
+                }
+            }
+
+            showLoading(text = '处理中...') {
+                document.getElementById('loading-text').textContent = text;
+                document.querySelector('.loading-overlay').classList.remove('hidden');
+            }
+
+            hideLoading() {
+                document.querySelector('.loading-overlay').classList.add('hidden');
+            }
+
+            onOpacityChanging(opacity) {
+                document.getElementById('opacity-value').textContent = opacity;
+                this.isRealtimeOpacity = true;
+                
+                // 防抖处理
+                clearTimeout(this.opacityDebounceTimer);
+                this.opacityDebounceTimer = setTimeout(() => {
+                    this.applyOpacity(opacity);
+                }, 50);
+            }
+
+            onOpacityChange(opacity) {
+                document.getElementById('opacity-value').textContent = opacity;
+                this.isRealtimeOpacity = false;
+                clearTimeout(this.opacityDebounceTimer);
+                this.applyOpacity(opacity);
+            }
+
+            applyOpacity(opacity) {
+                if (this.isProcessingFilter && this.filterProcessingType === 'opacity') {
+                    return;
+                }
+
+                this.isProcessingFilter = true;
+                this.filterProcessingType = 'opacity';
+
+                if (!this.isRealtimeOpacity) {
+                    this.showLoading('应用透明度...');
+                }
+
+                // 模拟滤镜处理
+                const processFilter = () => {
+                    try {
+                        const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                        const data = imageData.data;
+                        const alpha = opacity / 100;
+
+                        for (let i = 3; i < data.length; i += 4) {
+                            data[i] = Math.round(data[i] * alpha);
+                        }
+
+                        this.ctx.putImageData(imageData, 0, 0);
+                        
+                        // 强制刷新
+                        this.forceCanvasRefresh();
+
+                        this.isProcessingFilter = false;
+                        this.filterProcessingType = null;
+
+                        if (!this.isRealtimeOpacity) {
+                            this.hideLoading();
+                        }
+                    } catch (error) {
+                        console.error('透明度滤镜处理失败:', error);
+                        this.isProcessingFilter = false;
+                        this.filterProcessingType = null;
+                        this.hideLoading();
+                    }
+                };
+
+                // 使用requestAnimationFrame确保渲染时序
+                if (window.requestAnimationFrame) {
+                    requestAnimationFrame(processFilter);
+                } else {
+                    setTimeout(processFilter, 16);
+                }
+            }
+
+            applyGrayscaleWithIntensity(intensity) {
+                if (this.isProcessingFilter && this.filterProcessingType === 'grayscale') {
+                    return;
+                }
+
+                document.getElementById('grayscale-value').textContent = intensity;
+
+                this.isProcessingFilter = true;
+                this.filterProcessingType = 'grayscale';
+                this.showLoading('应用黑白滤镜...');
+
+                const processFilter = () => {
+                    try {
+                        const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                        const data = imageData.data;
+                        const factor = intensity / 100;
+
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i];
+                            const g = data[i + 1];
+                            const b = data[i + 2];
+
+                            const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+
+                            data[i] = Math.round(r + (gray - r) * factor);
+                            data[i + 1] = Math.round(g + (gray - g) * factor);
+                            data[i + 2] = Math.round(b + (gray - b) * factor);
+                        }
+
+                        this.ctx.putImageData(imageData, 0, 0);
+                        
+                        // 强制刷新
+                        this.forceCanvasRefresh();
+
+                        this.isProcessingFilter = false;
+                        this.filterProcessingType = null;
+                        this.hideLoading();
+                    } catch (error) {
+                        console.error('黑白滤镜处理失败:', error);
+                        this.isProcessingFilter = false;
+                        this.filterProcessingType = null;
+                        this.hideLoading();
+                    }
+                };
+
+                if (window.requestAnimationFrame) {
+                    requestAnimationFrame(processFilter);
+                } else {
+                    setTimeout(processFilter, 16);
+                }
+            }
+
+            forceCanvasRefresh() {
+                // 模拟Canvas刷新
+                const canvas = this.canvas;
+                if (canvas.style) {
+                    const originalTransform = canvas.style.transform;
+                    canvas.style.transform = 'translateZ(0)';
+                    setTimeout(() => {
+                        canvas.style.transform = originalTransform;
+                    }, 0);
+                }
+            }
+        }
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            window.canvasEditor = new MockCanvasEditor();
+        });
+    </script>
+</body>
+</html>

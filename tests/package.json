@@ -1,0 +1,41 @@
+{
+  "name": "miniprogram-filter-tests",
+  "version": "1.0.0",
+  "description": "滤镜功能测试套件",
+  "scripts": {
+    "test": "node run-tests.js",
+    "test:unit": "node run-tests.js unit",
+    "test:integration": "node run-tests.js integration",
+    "test:watch": "jest --watch --config jest.config.js",
+    "test:coverage": "jest --coverage --config jest.config.js",
+    "install-deps": "npm install --save-dev jest puppeteer @babel/core @babel/preset-env babel-jest jsdom identity-obj-proxy"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
+    "babel-jest": "^29.5.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "puppeteer": "^20.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/setup.js"],
+    "testMatch": ["<rootDir>/**/*.test.js"],
+    "collectCoverageFrom": [
+      "../miniprogram/components/**/*.js",
+      "../miniprogram/pages/**/*.js",
+      "!**/*.test.js",
+      "!**/node_modules/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "moduleNameMapping": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
+  }
+}
