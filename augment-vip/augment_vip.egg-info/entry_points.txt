@@ -1,3 +1,0 @@
-[console_scripts]
-augment-vip = augment_vip.cli:main
-
